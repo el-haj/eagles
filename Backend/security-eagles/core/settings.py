@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'news',
     'labs',
     'users',
-    'documentations'
+    'documentations',
     'learning',
     'certifications',
     'events'
@@ -140,4 +140,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
+
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent  # if not defined already
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
