@@ -6,6 +6,7 @@ urlpatterns = [
     path('hello/', HelloWorldView.as_view(), name='hello'),
     path('news/', include('news.urls')),
     #path('users/', include('core.urls')),  # Include user-related URLs
+    path('events/', include('events.urls')),
 ] 
 
 if settings.DEBUG:

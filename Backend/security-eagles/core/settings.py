@@ -162,3 +162,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
 ]
 # endregion
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),    # Token expires after 15 min
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),       # Refresh token expires after 7 days
+}

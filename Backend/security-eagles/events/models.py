@@ -39,3 +39,17 @@ class EventImage(models.Model):
         if self.image:
             return self.image.url
         return None
+
+
+
+
+class EventRegistration(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='event_registrations')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
+    is_canceled = models.BooleanField(default=False)
+    meta_data = models.JSONField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.event.title} ({'Canceled' if self.is_canceled else 'Active'})"

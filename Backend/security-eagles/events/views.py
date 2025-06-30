@@ -1,13 +1,13 @@
 # events/views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework import status
 from .models import Event, EventRegistration
 from .serializers import EventSerializer
 
 class EventListCreateView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly,IsAuthenticated]
 
     def get(self, request):
         user = request.user
@@ -34,7 +34,7 @@ class EventListCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EventRegisterView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly,IsAuthenticated]
 
     def post(self, request, event_id):
         user = request.user
