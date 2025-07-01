@@ -7,6 +7,7 @@ urlpatterns = [
     path('news/', include('news.urls')),
     #path('users/', include('core.urls')),  # Include user-related URLs
     path('events/', include('events.urls')),
+    path('documentations/', include('documentations.urls')),
 ] 
 
 if settings.DEBUG:
