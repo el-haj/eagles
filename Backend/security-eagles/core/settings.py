@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    
     'api',
     'news',
     'labs',
@@ -47,8 +48,10 @@ INSTALLED_APPS = [
     'documentations',
     'learning',
     'certifications',
-    'events'
+    'events',
+    'jobs',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -166,5 +169,5 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),    # Token expires after 15 min
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),       # Refresh token expires after 7 days
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=6),   # Refresh token expires after 7 days
 }
