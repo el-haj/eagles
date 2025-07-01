@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+AUTH_USER_MODEL = 'core.User'
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'documentations',
     'learning',
     'certifications',
-    'events'
+    'events',
+    'core'
 ]
 
 MIDDLEWARE = [
