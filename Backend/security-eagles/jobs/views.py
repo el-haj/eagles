@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.db.models import Q
 
@@ -8,7 +9,7 @@ from .models import Job, JobPost
 from .serializers import JobSerializer, JobPostSerializer
 
 class JobListCreateView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthenticated]
 
     def get(self, request):
         # Filter/search parameters

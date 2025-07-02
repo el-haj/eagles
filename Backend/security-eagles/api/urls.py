@@ -6,6 +6,7 @@ urlpatterns = [
     path('hello/', HelloWorldView.as_view(), name='hello'),
     path('news/', include('news.urls')),
     path('events/', include('events.urls')),
+    path('jobs/', include('jobs.urls')),
 ] 
 
 if settings.DEBUG:
