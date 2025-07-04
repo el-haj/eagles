@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'mozilla_django_oidc',
     
     'api',
     'news',
@@ -163,6 +164,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     #TODO: front end domain later
     "http://127.0.0.1:8000",
+    "http://localhost:8080"
 ]
 # endregion
 from datetime import timedelta
