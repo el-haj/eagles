@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'core.User'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'mozilla_django_oidc',
+    
     'api',
     'news',
     'labs',
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
     'certifications',
     'events',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -160,11 +163,12 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     #TODO: front end domain later
     "http://127.0.0.1:8000",
+    "http://localhost:8080"
 ]
 # endregion
 from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),    # Token expires after 15 min
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),       # Refresh token expires after 7 days
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=6),   # Refresh token expires after 7 days
 }

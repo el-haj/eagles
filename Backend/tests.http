@@ -1,0 +1,85 @@
+# POST http://127.0.0.1:8000/api/token/
+# Content-Type: application/json
+
+# {
+#   "username": "test",
+#   "password": "3Sv!:;57Y0$R"
+# }
+# --
+
+
+POST http://127.0.0.1:8000/token/refresh/
+Content-Type: application/json
+
+{
+"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MTg5MDA4MiwiaWF0IjoxNzUxMzcxNjgyLCJqdGkiOiI0ODE0ZGI2MGI0MGM0YzFlYTlhY2NhZWVhZDBmYzE4OSIsInVzZXJfaWQiOjJ9.2Mf5Vlu14QmNL-fZLtNW7QC1uXQH4JHnXjthDOINPF4"
+
+
+}
+
+### djd
+
+POST  http://127.0.0.1:8000/api/events/1/register/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMzc3NTgyLCJpYXQiOjE3NTEzNzE2ODIsImp0aSI6IjkxYjA4MTc4ZmMyMTQ5YTJhNmIzYjM2NGE1YzE0YzU0IiwidXNlcl9pZCI6Mn0.xVxjex5zdWh2XIs7gkARmPTAM8GQkaZkEs1n8xd-etA
+
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MTg5MDA4MiwiaWF0IjoxNzUxMzcxNjgyLCJqdGkiOiI0ODE0ZGI2MGI0MGM0YzFlYTlhY2NhZWVhZDBmYzE4OSIsInVzZXJfaWQiOjJ9.2Mf5Vlu14QmNL-fZLtNW7QC1uXQH4JHnXjthDOINPF4
+
+
+
+### Get all jobs (no filters)
+GET http://127.0.0.1:8000/api/jobs/
+Accept: application/json
+
+### Get all jobs with search and filters
+GET http://127.0.0.1:8000/api/jobs/?search=developer&category=IT&location=New%20York&is_remote=true
+Accept: application/json
+
+### Create a job (admin only)
+POST http://127.0.0.1:8000/api/jobs/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Senior Backend Developer",
+    "description": "Build APIs in Django.",
+    "requirements": "3+ years Django.",
+    "responsibilities": "Develop, document, test.",
+    "company_name": "Security Eagles",
+    "location": "Remote",
+    "job_type": "Full-Time",
+    "experience_level": "Senior",
+    "category": "IT",
+    "salary_min": "4000.00",
+    "salary_max": "6000.00",
+    "is_remote": true,
+    "application_deadline": "2025-12-31T23:59:59Z",
+    "contact_email": "hr@securityeagles.com",
+    "contact_phone": "+123456789",
+    "external_url": "https://securityeagles.com/careers/backend"
+}
+
+### Apply to a job
+POST http://127.0.0.1:8000/api/jobs/1/apply/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxNDEzMzIyLCJpYXQiOjE3NTEzNzE2ODIsImp0aSI6ImE2NTRiMjg0NjRhOTRkOTc4YzU0ZTc1NDRlZjg4ZmQxIiwidXNlcl9pZCI6Mn0.d7WKBm__obzwc5IYxPDfN3fev__SUcZMVCLLWmD62hs
+
+{
+    "meta_data": {
+        "cv_url": "https://drive.google.com/mycv",
+        "cover_letter": "Excited to join your team."
+    }
+}
+
+### Unapply from a job
+POST http://127.0.0.1:8000/api/jobs/1/unapply/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+### Try applying again to test duplicate prevention
+POST http://127.0.0.1:8000/api/jobs/1/apply/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}

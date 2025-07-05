@@ -1,13 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework import status
 from .models import News
 from .serializers import NewsSerializer
 from core.permissions import IsAdminOrReadOnly
 
 class NewsListCreateView(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly, IsAuthenticated]
 
     def get(self, request):
         limit = request.query_params.get('limit', 10)
