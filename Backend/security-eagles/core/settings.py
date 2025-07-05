@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'learning',
     'certifications',
     'events',
-    'core'
 ]
 
 MIDDLEWARE = [
