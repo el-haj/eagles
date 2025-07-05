@@ -4,9 +4,14 @@ from django.conf import settings
 # Create your models here.
 
 class Documentation(models.Model):
+    CATEGORY_CHOICES = [
+        ('learning_path', 'Learning Path'),
+        ('solution', 'Solution'),
+        ('general_post', 'General Post'),
+    ]
     title = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=100)
+    category = models.CharField(max_length=100,choices=CATEGORY_CHOICES)
     description = models.TextField()
     long_description = models.TextField(blank=True, null=True)
     main_markdown = models.TextField(blank=True, null=True)
