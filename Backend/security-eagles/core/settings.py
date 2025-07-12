@@ -25,7 +25,6 @@ SECRET_KEY = 'django-insecure-+5kk)nx+t)k#+*7im7ship_m&dh@5q3ppxreovzis@z%0bqlv#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -41,21 +40,23 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'mozilla_django_oidc',
+    'django_filters',
     
+    'core',
     'api',
     'news',
     'labs',
     'users',
     'documentations',
-    'learning',
+    'learnings',
     'certifications',
     'events',
     'jobs',
+    'contact',
 ]
 
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,6 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Custom User Model
+AUTH_USER_MODEL = 'core.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -149,7 +152,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'EXCEPTION_HANDLER': 'core.errors.custom_exception_handler',
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
 }
+HANDLER404 = 'core.errors.custom_404'
+HANDLER500 = 'core.errors.custom_500'
+HANDLER403 = 'core.errors.custom_403'
+CSRF_FAILURE_VIEW = 'core.errors.custom_csrf_failure'
+
 
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent  # if not defined already
@@ -158,18 +170,40 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # region cors origin
+ALLOWED_HOSTS = ['*','all']
 
+# ALLOWED_HOSTS = [
+#     '127.0.0.1',
+#     'localhost',
+#     "https://8ec24111c61b.ngrok-free.app",
+#     '8ec24111c61b.ngrok-free.app',
+# ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = [
-    #TODO: front end domain later
-    "http://127.0.0.1:8000",
-    "http://localhost:8080"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     #TODO: front end domain later
+#     "http://127.0.0.1:8000",
+#     "http://localhost:8080",
+#     "*"
+# ]
 # endregion
 from datetime import timedelta
 
+#TODO : cjhange 
+
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),    # Token expires after 15 min
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=40),    # Token expires after 15 min
     "REFRESH_TOKEN_LIFETIME": timedelta(days=6),   # Refresh token expires after 7 days
 }
+
+
+CSRF_TRUSTED_ORIGINS = [
+
+    "https://8ec24111c61b.ngrok-free.app",
+    "https://2843339063a7.ngrok-free.app",
+    "https://bdf023177831.ngrok-free.app"
+]
+
+CORS_ALLOW_ALL_ORIGINS = True

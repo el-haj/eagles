@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Security Eagles Brand Colors */
+    --background: 0 0% 100%;
+    --foreground: 210 77% 15%;
+    
+    /* Security Eagles Deep Blue as Primary */
+    --primary: 210 77% 15%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Security Eagles Gold as Secondary */
+    --secondary: 51 100% 50%;
+    --secondary-foreground: 210 77% 15%;
+    
+    /* Card and Surface Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 210 77% 15%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 77% 15%;
+    
+    /* Muted and Accent Colors */
+    --muted: 210 20% 95%;
+    --muted-foreground: 210 25% 45%;
+    
+    --accent: 210 30% 90%;
+    --accent-foreground: 210 77% 15%;
+    
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Borders and Inputs */
+    --border: 210 20% 85%;
+    --input: 210 20% 85%;
+    --ring: 210 77% 15%;
+    
+    /* Animations and Effects */
+    --gradient-primary: linear-gradient(135deg, hsl(210 77% 15%), hsl(210 77% 25%));
+    --gradient-secondary: linear-gradient(135deg, hsl(51 100% 50%), hsl(51 100% 60%));
+    --shadow-glow: 0 0 30px hsl(51 100% 50% / 0.3);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --radius: 0.5rem;
+    
+    /* Sidebar */
+    --sidebar-background: 210 77% 15%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 51 100% 50%;
+    --sidebar-primary-foreground: 210 77% 15%;
+    --sidebar-accent: 210 77% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 77% 25%;
+    --sidebar-ring: 51 100% 50%;
+  }
+
+  .dark {
+    /* Dark mode with Security Eagles branding */
+    --background: 210 77% 8%;
+    --foreground: 0 0% 100%;
+    
+    --card: 210 77% 12%;
+    --card-foreground: 0 0% 100%;
+    
+    --popover: 210 77% 12%;
+    --popover-foreground: 0 0% 100%;
+    
+    --primary: 51 100% 50%;
+    --primary-foreground: 210 77% 15%;
+    
+    --secondary: 210 77% 20%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 210 77% 18%;
+    --muted-foreground: 210 25% 65%;
+    
+    --accent: 210 77% 25%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 210 77% 20%;
+    --input: 210 77% 20%;
+    --ring: 51 100% 50%;
+    
+    --sidebar-background: 210 77% 6%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 51 100% 50%;
+    --sidebar-primary-foreground: 210 77% 15%;
+    --sidebar-accent: 210 77% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 77% 15%;
+    --sidebar-ring: 51 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-mono;
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+  }
+}
+
+@layer components {
+  /* Binary Matrix Animation */
+  .binary-matrix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.1;
+    z-index: -1;
+  }
+  
+  /* Glitch Effect */
+  .glitch {
+    position: relative;
+    animation: glitch 2s infinite;
+  }
+  
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: hsl(var(--secondary));
+    z-index: -1;
+  }
+  
+  .glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: hsl(var(--primary));
+    z-index: -2;
+  }
+  
+  /* Loading Pulse */
+  .loading-pulse {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  /* Hover Glow */
+  .hover-glow {
+    transition: var(--transition-smooth);
+  }
+  
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-secondary {
+    background: var(--gradient-secondary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .bg-gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+}

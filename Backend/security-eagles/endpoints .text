@@ -1,0 +1,581 @@
+News System
+
+1. Get Latest News (last 2 days)
+Endpoint: GET /news/latest/
+Auth: Optional
+Query Params:
+  - page (optional): Page number
+  - page_size (optional): Items per page (default 10)
+Response:
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "title": "Sample News Title",
+      "author": "John Doe",
+      "description": "Short description of the news.",
+      "long_description": "Full markdown content of the news.",
+      "is_published": true,
+      "published_at": "2025-07-04T12:00:00Z",
+      "created_by": 1,
+      "created_at": "2025-07-03T10:00:00Z",
+      "updated_at": "2025-07-03T12:00:00Z",
+      "tags": ["tag1", "tag2"],
+      "images": [
+        {
+          "id": 1,
+          "image_url": "/media/news_images/sample.jpg",
+          "caption": "Sample image caption"
+        }
+      ],
+      "views": 5
+    }
+  ]
+}
+
+2. Get Paginated News
+Endpoint: GET /news/paginated/
+Auth: Optional
+Query Params:
+  - page (optional): Page number
+  - page_size (optional): Items per page (default 10)
+Response: Same as above
+
+3. Increment News View
+Endpoint: POST /news/<id>/view/
+Auth: Optional
+Response:
+{
+  "id": 1,
+  "title": "Sample News Title",
+  "author": "John Doe",
+  "description": "Short description of the news.",
+  "long_description": "Full markdown content of the news.",
+  "is_published": true,
+  "published_at": "2025-07-04T12:00:00Z",
+  "created_by": 1,
+  "created_at": "2025-07-03T10:00:00Z",
+  "updated_at": "2025-07-03T12:00:00Z",
+  "tags": ["tag1", "tag2"],
+  "images": [
+    {
+      "id": 1,
+      "image_url": "/media/news_images/sample.jpg",
+      "caption": "Sample image caption"
+    }
+  ],
+  "views": 6
+}
+
+---
+
+Events System
+
+1. Get Latest Events (last 2 days or highlighted)
+Endpoint: GET /events/latest/
+Auth: Optional
+Query Params:
+  - page (optional): Page number
+  - page_size (optional): Items per page (default 10)
+Response:
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "title": "Sample Event Title",
+      "description": "Event description.",
+      "long_description": "Full event details.",
+      "event_type": "Webinar",
+      "is_physical": false,
+      "location": null,
+      "platform": "Zoom",
+      "platform_url": "https://zoom.us/j/123456789",
+      "start_time": "2025-07-10T15:00:00Z",
+      "end_time": "2025-07-10T17:00:00Z",
+      "max_attendees": 100,
+      "registration_deadline": "2025-07-09T23:59:59Z",
+      "is_recurring": false,
+      "recurrence_date": null,
+      "organizer": "Security Eagles",
+      "is_active": true,
+      "in_lights_date": "2025-07-04T12:00:00Z",
+      "created_by": 1,
+      "created_at": "2025-07-01T10:00:00Z",
+      "updated_at": "2025-07-01T12:00:00Z",
+      "images": [
+        {
+          "id": 1,
+          "image_url": "/media/event_images/sample.jpg",
+          "caption": "Event image caption"
+        }
+      ],
+      "is_registered": false
+    }
+  ]
+}
+
+2. Get Paginated Events
+Endpoint: GET /events/paginated/
+Auth: Optional
+Query Params:
+  - page (optional): Page number
+  - page_size (optional): Items per page (default 10)
+Response: Same as above
+
+3. Register for Event
+Endpoint: POST /events/<event_id>/register/
+Auth: JWT Required
+Response:
+{
+  "detail": "Registered successfully."
+}
+
+4. Unregister from Event
+Endpoint: DELETE /events/<event_id>/register/
+Auth: JWT Required
+Response:
+{
+  "detail": "Unregistered successfully."
+}
+
+---
+
+Learning Path System
+
+1. List Learning Paths
+Endpoint: GET /learning/paths/
+Auth: JWT Required
+Response:
+[
+  {
+    "id": 1,
+    "title": "Sample Path Title",
+    "objectives": "Learning objectives.",
+    "category": "Cybersecurity",
+    "tags": ["network", "security"],
+    "estimated_time": 120,
+    "meta_data": {},
+    "created_by": 1,
+    "created_at": "2025-07-01T10:00:00Z",
+    "updated_at": "2025-07-01T12:00:00Z",
+    "completed": false,
+    "in_progress": true
+  }
+]
+
+2. Get Learning Path Detail
+Endpoint: GET /learning/paths/<path_id>/
+Auth: JWT Required
+Response:
+{
+  "id": 1,
+  "title": "Sample Path Title",
+  "objectives": "Learning objectives.",
+  "category": "Cybersecurity",
+  "tags": ["network", "security"],
+  "estimated_time": 120,
+  "meta_data": {},
+  "created_by": 1,
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z",
+  "pdfs": [
+    {
+      "id": 10,
+      "order_index": 1,
+      "page_count": 12,
+      "file": "/media/learning_pdfs/1.pdf",
+      "uploaded_at": "2025-07-01T10:00:00Z",
+      "meta_data": {},
+      "unlocked": true,
+      "is_current": true
+    }
+  ],
+  "completed": false,
+  "in_progress": true,
+  "current_pdf_id": 10,
+  "last_page": 5
+}
+
+3. Unlock/Update Progress on PDF
+Endpoint: POST /learning/paths/<path_id>/unlock/<pdf_id>/
+Auth: JWT Required
+Request:
+{}
+Response:
+{
+  "success": true,
+  "completion": 0.5
+}
+
+4. Start/Track User Learning
+Endpoint: POST /learning/user-learnings/
+Auth: JWT Required
+Request:
+{
+  "learning_path_id": 1
+}
+Response:
+{
+  "id": 1,
+  "user": 1,
+  "learning_path": 1,
+  "pdf": 10,
+  "page": 1,
+  "completion": 0.1,
+  "meta_data": {},
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z"
+}
+
+5. Update User Learning Progress
+Endpoint: PATCH /learning/user-learnings/<id>/
+Auth: JWT Required
+Request:
+{
+  "pdf": 10,
+  "page": 5,
+  "completion": 0.5
+}
+Response:
+{
+  "id": 1,
+  "user": 1,
+  "learning_path": 1,
+  "pdf": 10,
+  "page": 5,
+  "completion": 0.5,
+  "meta_data": {},
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z"
+}
+
+---
+
+Labs System
+
+1. Get Latest Labs (max 2)
+Endpoint: GET /labs/latest/
+Auth: Optional
+Response:
+{
+  "id": 1,
+  "name": "Sample Lab Name",
+  "description": "Lab description.",
+  "lab_url": "https://external-lab.com/start/abc123",
+  "objectives": "Objectives of the lab.",
+  "difficulty_level": "Intermediate",
+  "category": "Web Security",
+  "prize": "Certificate",
+  "estimated_time": 60,
+  "notes": "Some notes.",
+  "cooldown_minutes": 120,
+  "max_score": 100,
+  "reward_points": 50,
+  "external_lab_id": "abc123",
+  "created_by": 1,
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z"
+}
+
+2. Get Paginated Labs
+Endpoint: GET /labs/paginated/
+Auth: Optional
+Query Params:
+  - page (optional): Page number
+  - page_size (optional): Items per page (default 10)
+Response: Same as above, paginated
+
+3. Get Lab Detail
+Endpoint: GET /labs/<id>/
+Auth: Optional
+Response:
+{
+  "id": 1,
+  "name": "Sample Lab Name",
+  "description": "Lab description.",
+  "lab_url": "https://external-lab.com/start/abc123",
+  "objectives": "Objectives of the lab.",
+  "difficulty_level": "Intermediate",
+  "category": "Web Security",
+  "prize": "Certificate",
+  "estimated_time": 60,
+  "notes": "Some notes.",
+  "cooldown_minutes": 120,
+  "max_score": 100,
+  "reward_points": 50,
+  "external_lab_id": "abc123",
+  "created_by": 1,
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z"
+}
+
+4. List User Lab Attempts
+Endpoint: GET /labs/user-labs/
+Auth: JWT Required
+Response:
+{
+  "id": 1,
+  "user": 1,
+  "lab": 1,
+  "time_spent": 45,
+  "started_at": "2025-07-01T13:00:00Z",
+  "ended_at": "2025-07-01T13:45:00Z",
+  "score": 80,
+  "is_ok": true,
+  "reward_points_earned": 50,
+  "external_attempt_id": "ext-attempt-xyz",
+  "cooldown_until": "2025-07-01T15:45:00Z",
+  "created_at": "2025-07-01T13:00:00Z",
+  "updated_at": "2025-07-01T13:45:00Z"
+}
+
+5. Create User Lab Attempt (internal, for user-initiated start)
+Endpoint: POST /labs/user-labs/create/
+Auth: JWT Required
+Request:
+{
+  "lab": 1,
+  "time_spent": 45,
+  "started_at": "2025-07-01T13:00:00Z",
+  "ended_at": "2025-07-01T13:45:00Z",
+  "score": 80,
+  "is_ok": true
+}
+Response:
+{
+  "id": 1,
+  "user": 1,
+  "lab": 1,
+  "time_spent": 45,
+  "started_at": "2025-07-01T13:00:00Z",
+  "ended_at": "2025-07-01T13:45:00Z",
+  "score": 80,
+  "is_ok": true,
+  "reward_points_earned": 50,
+  "external_attempt_id": null,
+  "cooldown_until": "2025-07-01T15:45:00Z",
+  "created_at": "2025-07-01T13:00:00Z",
+  "updated_at": "2025-07-01T13:45:00Z"
+}
+
+6. External Lab Result Submission (for external system)
+Endpoint: POST /labs/external/submit/
+Auth: None (should be protected by a secret or IP allowlist in production)
+Request:
+{
+  "user_id": 1,
+  "lab_id": 1,
+  "score": 90,
+  "is_ok": true,
+  "time_spent": 50,
+  "started_at": "2025-07-01T14:00:00Z",
+  "ended_at": "2025-07-01T14:50:00Z",
+  "reward_points": 60,
+  "external_attempt_id": "ext-attempt-abc"
+}
+Response:
+{
+  "success": true,
+  "user_lab_id": 2
+}
+
+---
+
+Jobs System
+
+1. Get Highlighted Jobs (latest in_lights_date)
+Endpoint: GET /jobs/highlighted/
+Auth: Optional
+Response:
+{
+  "id": 1,
+  "title": "Senior Security Analyst",
+  "description": "Job description...",
+  "requirements": "Requirements...",
+  "responsibilities": "Responsibilities...",
+  "company_name": "CyberSecure Inc.",
+  "logo": "/media/job_logos/logo1.png",
+  "location": "Remote",
+  "location_url": "https://maps.example.com/remote",
+  "job_type": "Full-Time",
+  "experience_level": "Senior",
+  "category": "Security",
+  "salary_min": "5000.00",
+  "salary_max": "9000.00",
+  "is_remote": true,
+  "application_deadline": "2025-08-01T23:59:59Z",
+  "contact_email": "hr@cybersecure.com",
+  "contact_phone": "+1234567890",
+  "external_url": "https://external-jobs.com/job/1",
+  "posted_by": 1,
+  "closed_at": null,
+  "application_count": 5,
+  "in_lights_date": "2025-07-05T10:00:00Z",
+  "is_active": true,
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z",
+  "is_applied": false,
+  "logo_url": "/media/job_logos/logo1.png"
+}
+
+2. Get Paginated Jobs (with filters)
+Endpoint: GET /jobs/paginated/
+Auth: Optional
+Query Params:
+  - page (optional): Page number
+  - page_size (optional): Items per page (default 10)
+  - search (optional): Search string
+  - category (optional): Category
+  - location (optional): Location
+  - job_type (optional): Full-Time, Part-Time, etc.
+  - experience_level (optional): Junior, Senior, etc.
+  - is_remote (optional): true/false
+Response: Same as above, paginated
+
+3. Apply to Job
+Endpoint: POST /jobs/<job_id>/apply/
+Auth: JWT Required
+Request:
+{
+  "message": "I am interested in this job because..."
+}
+Response:
+{
+  "detail": "Application submitted."
+}
+
+4. Unapply from Job
+Endpoint: POST /jobs/<job_id>/unapply/
+Auth: JWT Required
+Response:
+{
+  "detail": "Application removed."
+}
+
+5. List My Applications
+Endpoint: GET /jobs/my-applications/
+Auth: JWT Required
+Response:
+{
+  "id": 1,
+  "user": 1,
+  "job": 1,
+  "message": "I am interested in this job because...",
+  "meta_data": {
+    "bio": "Experienced security analyst...",
+    "skills": ["Python", "SIEM", "Incident Response"]
+  },
+  "status": "pending",
+  "created_at": "2025-07-01T11:00:00Z"
+}
+
+---
+
+Documentations System
+
+1. Get Documentation Accordion (grouped by category)
+Endpoint: GET /documentations/accordion/
+Auth: Optional
+Response:
+{
+  "Category 1": [
+    {"id": 1, "title": "Doc Title 1", "name": "doc1", "description": "Short desc..."},
+    {"id": 2, "title": "Doc Title 2", "name": "doc2", "description": "Short desc..."}
+  ],
+  "Category 2": [
+    {"id": 3, "title": "Doc Title 3", "name": "doc3", "description": "Short desc..."}
+  ]
+}
+
+2. Get Documentation Markdown Content
+Endpoint: GET /documentations/<id>/markdown/
+Auth: Optional
+Response:
+{
+  "id": 1,
+  "title": "Doc Title 1",
+  "category": "Category 1",
+  "main_markdown": "# Markdown content...",
+  "links": [
+    {"name": "Resource 1", "url": "https://external.com/resource1"},
+    {"name": "Resource 2", "url": "https://external.com/resource2"}
+  ],
+  "meta_data": {},
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z"
+}
+
+---
+
+Profile System
+
+1. Get Current User Profile
+Endpoint: GET /core/profile/
+Auth: JWT Required
+Response:
+{
+  "id": 1,
+  "username": "johndoe",
+  "email": "john@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "sso_provider": null,
+  "sso_id": null,
+  "score": 120,
+  "cv": "/media/user_cvs/johndoe_cv.pdf",
+  "profile_pic": "/media/user_pics/johndoe.jpg",
+  "github": "https://github.com/johndoe",
+  "linkedin": "https://linkedin.com/in/johndoe",
+  "portfolio_url": "https://johndoe.dev",
+  "phone": "+1234567890",
+  "city": "New York",
+  "type": "public",
+  "is_active": true,
+  "created_by": null,
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z",
+  "meta_data": {}
+}
+
+2. Update Profile (except username/email/password)
+Endpoint: PATCH /core/profile/
+Auth: JWT Required
+Request:
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "github": "https://github.com/johndoe",
+  "linkedin": "https://linkedin.com/in/johndoe",
+  "portfolio_url": "https://johndoe.dev",
+  "phone": "+1234567890",
+  "city": "New York",
+  "type": "public",
+  "meta_data": {"bio": "Security enthusiast"}
+}
+Response: Same as above (with updated fields)
+
+3. Upload Profile Picture
+Endpoint: POST /core/profile/upload-pic/
+Auth: JWT Required
+Request (multipart/form-data):
+  - profile_pic: (image file)
+Response:
+{
+  "profile_pic": "/media/user_pics/johndoe.jpg"
+}
+
+4. Upload CV
+Endpoint: POST /core/profile/upload-cv/
+Auth: JWT Required
+Request (multipart/form-data):
+  - cv: (PDF or doc file)
+Response:
+{
+  "cv": "/media/user_cvs/johndoe_cv.pdf"
+}

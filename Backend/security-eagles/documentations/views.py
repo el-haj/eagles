@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework import status
 from .models import Documentation
 from .serializers import DocumentationDetailSerializer,DocumentationListSerializer
+from collections import defaultdict
 
 class DocumentationView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly,IsAuthenticated]
@@ -70,3 +71,34 @@ class DocumentationActivateView(APIView):
         documentation.is_active = True
         documentation.save()
         return Response({'detail': 'Documentation activated.'}, status=status.HTTP_200_OK)
+
+class DocumentationAccordionView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        docs = Documentation.objects.filter(is_active=True).order_by('category', 'title')
+        grouped = defaultdict(list)
+        for doc in docs:
+            grouped[doc.category].append({
+                'id': doc.id,
+                'title': doc.title,
+                'name': doc.name,
+                'description': doc.description,
+            })
+        return Response(grouped)
+
+class DocumentationMarkdownContentView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, pk):
+        doc = Documentation.objects.get(pk=pk, is_active=True)
+        return Response({
+            'id': doc.id,
+            'title': doc.title,
+            'category': doc.category,
+            'main_markdown': doc.main_markdown,
+            'links': doc.links or [],
+            'meta_data': doc.meta_data or {},
+            'created_at': doc.created_at,
+            'updated_at': doc.updated_at,
+        })

@@ -1,0 +1,244 @@
+NEWS API ENDPOINTS - FRONTEND DEVELOPER GUIDE
+==============================================
+
+BASE URL: http://localhost:8000/api
+
+AUTHENTICATION
+--------------
+ALL endpoints require JWT authentication.
+
+1. Login to get token:
+   POST /auth/login/
+   Body: {"username": "your_username", "password": "your_password"}
+   Response: {"access": "jwt_token", "refresh": "refresh_token"}
+
+2. Include token in all requests:
+   Headers: Authorization: Bearer <access_token>
+
+NEWS ENDPOINTS
+==============
+
+📰 GET NEWS LIST
+----------------
+GET /news/
+- Returns paginated list of published news articles
+- Query params:
+  - page: Page number (default: 1)
+  - page_size: Items per page (max: 50)
+  - category_slug: Filter by category
+  - search: Search in title/content
+  - ordering: -published_at, views, likes
+
+Response:
+{
+  "count": 10,
+  "next": "http://localhost:8000/news/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "title": "Article Title",
+      "slug": "article-slug",
+      "summary": "Brief summary...",
+      "category_name": "Technology",
+      "category_color": "#007bff",
+      "tags": ["tech", "news"],
+      "published_at": "2025-07-06T12:00:00Z",
+      "views": 150,
+      "likes": 25,
+      "like_count": 25,
+      "is_liked_by_user": false,
+      "comment_count": 5,
+      "featured_image": {
+        "id": 1,
+        "image": "/media/news/image.jpg",
+        "alt_text": "Image description"
+      },
+      "author_name": "John Doe",
+      "reading_time": 3
+    }
+  ]
+}
+
+📖 GET SINGLE ARTICLE
+---------------------
+GET /news/{slug}/
+- Returns full article content
+- Automatically increments view count
+
+Response:
+{
+  "id": 1,
+  "title": "Full Article Title",
+  "slug": "article-slug",
+  "content": "Full article content...",
+  "summary": "Brief summary...",
+  "category": {
+    "id": 1,
+    "name": "Technology",
+    "slug": "technology",
+    "color": "#007bff"
+  },
+  "tags": ["tech", "news"],
+  "published_at": "2025-07-06T12:00:00Z",
+  "views": 151,
+  "likes": 25,
+  "like_count": 25,
+  "is_liked_by_user": false,
+  "comment_count": 5,
+  "images": [
+    {
+      "id": 1,
+      "image": "/media/news/image.jpg",
+      "alt_text": "Image description",
+      "is_featured": true
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "content": "Great article!",
+      "author_name": "Jane Doe",
+      "created_at": "2025-07-06T13:00:00Z",
+      "replies": []
+    }
+  ],
+  "author_name": "John Doe",
+  "reading_time": 3
+}
+
+🏷️ GET CATEGORIES
+-----------------
+GET /news/categories/
+- Returns list of all active categories
+
+Response:
+[
+  {
+    "id": 1,
+    "name": "Technology",
+    "slug": "technology",
+    "description": "Tech news and updates",
+    "color": "#007bff",
+    "news_count": 15
+  }
+]
+
+⭐ GET FEATURED NEWS
+-------------------
+GET /news/featured/
+- Returns featured articles (same format as news list)
+
+🚨 GET BREAKING NEWS
+--------------------
+GET /news/breaking/
+- Returns breaking news (max 5 items)
+
+🕐 GET LATEST NEWS
+------------------
+GET /news/latest/
+- Returns recent news
+- Query param: days (default: 7)
+
+🔍 SEARCH NEWS
+--------------
+GET /news/search/?q=search_term
+- Search in title, content, tags, author
+
+USER INTERACTIONS
+=================
+
+❤️ LIKE/UNLIKE ARTICLE
+----------------------
+POST /news/{slug}/like/
+- Toggles like status for current user
+
+Response:
+{
+  "liked": true,
+  "message": "News liked"
+}
+
+💬 GET COMMENTS
+---------------
+GET /news/{slug}/comments/
+- Returns paginated comments for article
+
+💬 POST COMMENT
+---------------
+POST /news/{slug}/comments/
+Body:
+{
+  "content": "Your comment here",
+  "parent": null  // or comment_id for replies
+}
+
+ADMIN ENDPOINTS (Staff Only)
+============================
+
+📝 CREATE ARTICLE
+-----------------
+POST /news/admin/
+Body:
+{
+  "title": "Article Title",
+  "summary": "Brief summary",
+  "content": "Full content",
+  "category": 1,
+  "tags": ["tag1", "tag2"],
+  "status": "published",  // draft, review, published, archived
+  "priority": "normal",   // low, normal, high, urgent
+  "is_featured": false,
+  "is_breaking": false
+}
+
+📝 UPDATE ARTICLE
+-----------------
+PUT/PATCH /news/admin/{slug}/
+
+📝 DELETE ARTICLE
+-----------------
+DELETE /news/admin/{slug}/
+
+📝 PUBLISH ARTICLE
+------------------
+POST /news/admin/{slug}/publish/
+
+📝 GET ADMIN LIST
+----------------
+GET /news/admin/
+- Returns all articles (including drafts)
+- Query params: status, category_id
+
+IMPORTANT NOTES
+===============
+
+1. All endpoints require authentication
+2. Like status (is_liked_by_user) is always included in responses
+3. Images are served from /media/ path
+4. Pagination uses standard format with count, next, previous
+5. Timestamps are in ISO 8601 format (UTC)
+6. Admin endpoints require staff permissions
+
+ERROR RESPONSES
+===============
+
+401 Unauthorized:
+{"detail": "Authentication credentials were not provided."}
+
+403 Forbidden:
+{"detail": "You do not have permission to perform this action."}
+
+404 Not Found:
+{"detail": "Not found."}
+
+FRONTEND INTEGRATION TIPS
+=========================
+
+1. Store JWT token in localStorage/sessionStorage
+2. Add token to all API requests
+3. Handle token expiration (refresh or re-login)
+4. Use is_liked_by_user to show correct like button state
+5. Use like_count for displaying total likes
+6. Use featured_image for article thumbnails
+7. Use reading_time for UX indicators

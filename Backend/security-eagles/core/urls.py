@@ -26,5 +26,28 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('api.urls')),
+    path('api/news/', include('news.urls')),
+    path('api/jobs/', include('jobs.urls')),
+    path('api/events/', include('events.urls')),
+    path('api/learnings/', include('learnings.urls')),
+    path('api/contact/', include('contact.urls')),
     path('oidc/', include('mozilla_django_oidc.urls')),
 ]
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
+
+urlpatterns += [
+    path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/verify/', TokenVerifyView.as_view(), name='token_verify'),
+]
+
+# Media files serving (for development)
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

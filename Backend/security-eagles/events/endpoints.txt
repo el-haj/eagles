@@ -1,0 +1,396 @@
+# Events API Endpoints Documentation
+
+## Authentication
+All endpoints require JWT authentication. Include the token in the Authorization header:
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+## Base URL
+All endpoints are prefixed with: `/api/events/`
+
+---
+
+## Public Event Endpoints
+
+### 1. List Events (Paginated)
+**GET** `/api/events/`
+
+**Description:** Get paginated list of published events with filtering and search capabilities.
+
+**Query Parameters:**
+- `page` (int): Page number (default: 1)
+- `page_size` (int): Items per page (default: 20, max: 50)
+- `search` (string): Search in title, description, organizer, tags
+- `category` (int): Filter by category ID
+- `category_slug` (string): Filter by category slug
+- `event_type` (string): Filter by event type (conference, workshop, webinar, etc.)
+- `status` (string): Filter by status (published, draft, etc.)
+- `priority` (string): Filter by priority (low, normal, high, urgent)
+- `is_physical` (boolean): Filter physical vs online events
+- `is_featured` (boolean): Filter featured events
+- `is_recurring` (boolean): Filter recurring events
+- `registration_required` (boolean): Filter events requiring registration
+- `registration_open` (boolean): Filter events with open registration
+- `upcoming` (boolean): Filter upcoming events
+- `ongoing` (boolean): Filter currently ongoing events
+- `past` (boolean): Filter past events
+- `this_week` (boolean): Filter events this week
+- `this_month` (boolean): Filter events this month
+- `tags` (string): Filter by tags (comma-separated)
+- `organizer` (string): Filter by organizer name
+- `platform` (string): Filter by platform name
+- `start_date` (datetime): Filter events starting after this date
+- `end_date` (datetime): Filter events ending before this date
+- `ordering` (string): Sort by fields (start_time, created_at, views, priority)
+
+**Response:**
+```json
+{
+  "count": 25,
+  "next": "http://localhost:8000/api/events/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "title": "Django Conference 2025",
+      "slug": "django-conference-2025",
+      "subtitle": "The biggest Django event of the year",
+      "description": "Join us for an amazing Django conference...",
+      "category": {
+        "id": 1,
+        "name": "Conference",
+        "slug": "conference",
+        "color": "#007bff"
+      },
+      "event_type": "conference",
+      "status": "published",
+      "priority": "high",
+      "is_featured": true,
+      "is_physical": false,
+      "is_recurring": false,
+      "start_time": "2025-08-15T09:00:00Z",
+      "end_time": "2025-08-17T18:00:00Z",
+      "timezone_info": "UTC",
+      "location": "Online",
+      "platforms": ["Zoom", "YouTube"],
+      "organizer": "Django Software Foundation",
+      "registration_required": true,
+      "registration_deadline": "2025-08-10T23:59:59Z",
+      "max_attendees": 500,
+      "attendee_count": 245,
+      "registration_open": true,
+      "spots_remaining": 255,
+      "tags": ["django", "python", "web-development"],
+      "views": 1250,
+      "is_upcoming": true,
+      "is_ongoing": false,
+      "is_passed": false,
+      "duration_hours": 27.0,
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "Admin",
+        "last_name": "User"
+      },
+      "created_at": "2025-07-01T10:00:00Z",
+      "published_at": "2025-07-01T12:00:00Z",
+      "featured_image": "http://localhost:8000/media/events/django-conf-2025.jpg"
+    }
+  ]
+}
+```
+
+### 2. Get Event Categories
+**GET** `/api/events/categories/`
+
+**Description:** Get list of all active event categories.
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Conference",
+    "slug": "conference",
+    "description": "Large-scale professional events",
+    "color": "#007bff",
+    "icon": "fas fa-users",
+    "event_count": 15
+  }
+]
+```
+
+### 3. Get Event Details
+**GET** `/api/events/{slug}/`
+
+**Description:** Get detailed information about a specific event.
+
+**Response:**
+```json
+{
+  "id": 1,
+  "title": "Django Conference 2025",
+  "slug": "django-conference-2025",
+  "subtitle": "The biggest Django event of the year",
+  "description": "Join us for an amazing Django conference...",
+  "long_description": "Detailed event description with full agenda...",
+  "objectives": "Learn advanced Django techniques, network with experts...",
+  "category": {
+    "id": 1,
+    "name": "Conference",
+    "slug": "conference",
+    "color": "#007bff"
+  },
+  "event_type": "conference",
+  "status": "published",
+  "priority": "high",
+  "is_featured": true,
+  "is_physical": false,
+  "is_recurring": false,
+  "start_time": "2025-08-15T09:00:00Z",
+  "end_time": "2025-08-17T18:00:00Z",
+  "timezone_info": "UTC",
+  "location": "Online",
+  "address": "",
+  "platforms": ["Zoom", "YouTube"],
+  "platform_urls": {
+    "Zoom": "https://zoom.us/j/123456789",
+    "YouTube": "https://youtube.com/watch?v=abc123"
+  },
+  "organizer": "Django Software Foundation",
+  "organizer_email": "events@djangoproject.com",
+  "organizer_phone": "+1-555-0123",
+  "organizer_website": "https://djangoproject.com",
+  "registration_required": true,
+  "registration_deadline": "2025-08-10T23:59:59Z",
+  "registration_url": "https://djangoconf.com/register",
+  "max_attendees": 500,
+  "attendee_count": 245,
+  "registration_open": true,
+  "spots_remaining": 255,
+  "tags": ["django", "python", "web-development"],
+  "meta_description": "Join the biggest Django conference of 2025",
+  "meta_keywords": "django, python, conference, web development",
+  "views": 1250,
+  "is_upcoming": true,
+  "is_ongoing": false,
+  "is_passed": false,
+  "duration_hours": 27.0,
+  "recurrence_type": null,
+  "recurrence_interval": null,
+  "recurrence_end_date": null,
+  "parent_event": null,
+  "created_by": {
+    "id": 1,
+    "username": "admin",
+    "first_name": "Admin",
+    "last_name": "User"
+  },
+  "created_at": "2025-07-01T10:00:00Z",
+  "updated_at": "2025-07-01T12:00:00Z",
+  "published_at": "2025-07-01T12:00:00Z",
+  "images": [
+    {
+      "id": 1,
+      "image": "http://localhost:8000/media/events/django-conf-2025.jpg",
+      "alt_text": "Django Conference 2025 Banner",
+      "caption": "Main conference banner",
+      "is_featured": true,
+      "order": 1
+    }
+  ]
+}
+```
+
+### 4. Featured Events
+**GET** `/api/events/featured/`
+
+**Description:** Get list of featured events (max 10).
+
+### 5. Upcoming Events
+**GET** `/api/events/upcoming/`
+
+**Description:** Get paginated list of upcoming events.
+
+### 6. Ongoing Events
+**GET** `/api/events/ongoing/`
+
+**Description:** Get list of currently ongoing events.
+
+### 7. Past Events
+**GET** `/api/events/past/`
+
+**Description:** Get paginated list of past events.
+
+### 8. Search Events
+**GET** `/api/events/search/?search={query}`
+
+**Description:** Search events by title, description, organizer, or tags.
+
+---
+
+## Registration Endpoints (Optional Feature)
+
+### 9. Register for Event
+**POST** `/api/events/{slug}/register/`
+
+**Description:** Register for an event (if registration is required).
+
+**Request Body:**
+```json
+{
+  "registration_data": {
+    "dietary_requirements": "Vegetarian",
+    "company": "Tech Corp"
+  },
+  "notes": "Looking forward to the event!"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "event": 1,
+  "registration_data": {
+    "dietary_requirements": "Vegetarian",
+    "company": "Tech Corp"
+  },
+  "notes": "Looking forward to the event!",
+  "is_canceled": false,
+  "created_at": "2025-07-06T14:30:00Z"
+}
+```
+
+### 10. Unregister from Event
+**PATCH** `/api/events/{slug}/unregister/`
+
+**Description:** Cancel registration for an event.
+
+**Response:**
+```json
+{
+  "detail": "Successfully unregistered from event"
+}
+```
+
+---
+
+## Admin Endpoints (Staff/Admin Only)
+
+### 11. Admin Event List
+**GET** `/api/events/admin/`
+
+**Description:** Get all events (including drafts) with admin privileges.
+
+### 12. Create Event
+**POST** `/api/events/admin/`
+
+**Description:** Create a new event.
+
+**Request Body:**
+```json
+{
+  "title": "New Event",
+  "description": "Event description",
+  "long_description": "Detailed description",
+  "category": 1,
+  "event_type": "workshop",
+  "start_time": "2025-09-01T10:00:00Z",
+  "end_time": "2025-09-01T16:00:00Z",
+  "location": "Conference Center",
+  "organizer": "Event Organizer",
+  "tags": ["workshop", "learning"]
+}
+```
+
+### 13. Admin Event Details
+**GET** `/api/events/admin/{slug}/`
+
+**Description:** Get event details with admin privileges.
+
+### 14. Update Event
+**PUT/PATCH** `/api/events/admin/{slug}/`
+
+**Description:** Update an existing event.
+
+### 15. Delete Event
+**DELETE** `/api/events/admin/{slug}/`
+
+**Description:** Delete an event (soft delete - sets is_active=False).
+
+### 16. Publish Event
+**PATCH** `/api/events/admin/{slug}/publish/`
+
+**Description:** Publish a draft event.
+
+**Response:**
+```json
+{
+  "detail": "Event published successfully",
+  "published_at": "2025-07-06T14:30:00Z"
+}
+```
+
+### 17. Archive Event
+**PATCH** `/api/events/admin/{slug}/archive/`
+
+**Description:** Archive an event.
+
+**Response:**
+```json
+{
+  "detail": "Event archived successfully"
+}
+```
+
+---
+
+## Error Responses
+
+### 400 Bad Request
+```json
+{
+  "detail": "Invalid request data",
+  "errors": {
+    "title": ["This field is required."],
+    "start_time": ["Start time must be in the future."]
+  }
+}
+```
+
+### 401 Unauthorized
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+### 403 Forbidden
+```json
+{
+  "detail": "You do not have permission to perform this action."
+}
+```
+
+### 404 Not Found
+```json
+{
+  "detail": "Event not found."
+}
+```
+
+---
+
+## Integration Tips
+
+1. **Pagination:** Always handle pagination for list endpoints
+2. **Filtering:** Use query parameters for efficient filtering
+3. **Caching:** Consider caching event lists and details
+4. **Real-time Updates:** Use WebSockets for live event updates
+5. **Image Handling:** Handle multiple images per event
+6. **Time Zones:** Always work with UTC times, convert on frontend
+7. **Registration:** Check registration_required before showing registration UI
+8. **Status Tracking:** Use is_upcoming, is_ongoing, is_passed for UI states

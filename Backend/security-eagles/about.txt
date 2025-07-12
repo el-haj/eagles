@@ -1,0 +1,308 @@
+SECURITY EAGLES - COMMUNITY NEWS SYSTEM
+========================================
+
+OVERVIEW
+--------
+This Django application provides a comprehensive news system for a community website with the following features:
+- News article management with rich content support
+- User authentication and authorization
+- Pagination for news previews and full content
+- Admin panel for content management
+- Category-based organization
+- User interactions (likes, comments)
+- Analytics and view tracking
+- SEO optimization
+
+MODELS
+------
+
+1. NewsCategory
+   - name: Category name (unique)
+   - slug: URL-friendly identifier
+   - description: Category description
+   - color: Hex color code for UI
+   - is_active: Enable/disable category
+
+2. News (Main Model)
+   - title: Article title
+   - slug: URL-friendly identifier (auto-generated)
+   - subtitle: Optional subtitle
+   - author: Author name
+   - summary: Brief summary for previews (max 500 chars)
+   - content: Full article content (markdown supported)
+   - excerpt: Auto-generated or custom excerpt
+   - category: Foreign key to NewsCategory
+   - tags: Array of tags for searchability
+   - status: draft/review/published/archived
+   - priority: low/normal/high/urgent
+   - is_featured: Feature on homepage
+   - is_breaking: Mark as breaking news
+   - published_at: Publication timestamp
+   - created_by: Foreign key to User
+   - views: View count
+   - likes: Like count
+   - meta_description: SEO meta description
+   - meta_keywords: SEO keywords
+
+3. NewsImage
+   - news: Foreign key to News
+   - image: Image file (uploaded to news_images/%Y/%m/)
+   - caption: Image caption
+   - alt_text: Accessibility alt text
+   - is_featured: Use as featured image
+   - order: Display order
+
+4. NewsComment
+   - news: Foreign key to News
+   - author: Foreign key to User
+   - content: Comment content (max 1000 chars)
+   - parent: Self-referencing for replies
+   - is_approved: Moderation flag
+
+5. NewsLike
+   - news: Foreign key to News
+   - user: Foreign key to User
+   - Unique constraint on (news, user)
+
+6. NewsView
+   - news: Foreign key to News
+   - user: Foreign key to User (nullable for anonymous)
+   - ip_address: Client IP address
+   - user_agent: Browser information
+   - created_at: View timestamp
+
+API ENDPOINTS
+-------------
+
+ALL ENDPOINTS REQUIRE AUTHENTICATION - Include JWT token in all requests:
+Authorization: Bearer <access_token>
+
+AUTHENTICATED ENDPOINTS (All Require Login):
+
+GET /news/
+- List news previews with pagination
+- Query parameters:
+  - page: Page number
+  - page_size: Items per page (max 50)
+  - category_slug: Filter by category
+  - tags: Comma-separated tags
+  - date_from: Filter from date (YYYY-MM-DD)
+  - date_to: Filter to date (YYYY-MM-DD)
+  - search: Search in title, summary, tags, author
+  - ordering: Sort by published_at, views, likes, created_at
+
+GET /news/featured/
+- List featured news articles
+
+GET /news/breaking/
+- List breaking news (max 5 items)
+
+GET /news/latest/
+- List latest news from recent days
+- Query parameter: days (default: 7)
+
+GET /news/categories/
+- List all active news categories
+
+GET /news/<slug>/
+- Get full news article content
+- Automatically increments view count
+
+GET /news/search/
+- Advanced search endpoint
+- Query parameter: q (search query)
+
+USER INTERACTION ENDPOINTS (Require Login):
+
+GET/POST /news/<slug>/comments/
+- List and create comments for an article
+- POST requires authentication
+
+POST /news/<slug>/like/
+- Toggle like/unlike for an article
+- Returns: {"liked": true/false, "message": "..."}
+
+LIKE SYSTEM
+-----------
+Every news article response includes:
+- "like_count": Total number of likes for the article
+- "is_liked_by_user": Boolean indicating if current authenticated user has liked this article
+
+Examples:
+- If user hasn't liked: "is_liked_by_user": false, "like_count": 5
+- If user has liked: "is_liked_by_user": true, "like_count": 6
+
+This applies to both:
+- News preview listings (GET /news/)
+- Full article details (GET /news/<slug>/)
+
+ADMIN ENDPOINTS (Require Staff/Admin Permissions):
+
+GET/POST /news/admin/
+- List and create news articles (admin view)
+- Supports filtering by status, category_id
+- POST creates new article
+
+GET/PUT/PATCH/DELETE /news/admin/<slug>/
+- Retrieve, update, or delete specific article
+
+POST /news/admin/<slug>/publish/
+- Toggle publish status of an article
+
+POST /news/admin/<slug>/images/
+- Upload images for an article
+
+GET /news/admin/analytics/
+- Get news analytics dashboard data
+
+AUTHENTICATION
+--------------
+The system uses JWT (JSON Web Tokens) for authentication:
+
+1. Login: POST /auth/login/
+   Body: {"username": "...", "password": "..."}
+   Returns: {"access": "...", "refresh": "..."}
+
+2. Refresh: POST /auth/refresh/
+   Body: {"refresh": "..."}
+   Returns: {"access": "..."}
+
+3. Verify: POST /auth/verify/
+   Body: {"token": "..."}
+
+Include JWT token in requests:
+Authorization: Bearer <access_token>
+
+PERMISSIONS
+-----------
+- Authentication Required: All endpoints require valid JWT token
+- Authenticated Users: Can read news, like articles, post comments
+- Staff/Admin: Can create, edit, delete articles, manage comments
+
+PAGINATION
+----------
+All list endpoints support pagination:
+- Default page size: 12 for previews, 20 for admin
+- Maximum page size: 50 for public, 100 for admin
+- Response format:
+  {
+    "count": total_items,
+    "next": "next_page_url",
+    "previous": "previous_page_url",
+    "results": [...]
+  }
+
+ADMIN PANEL
+-----------
+Django admin interface available at /admin/ with:
+
+1. News Management:
+   - Rich text editing for content
+   - Image upload and management
+   - Publishing workflow
+   - Bulk actions (publish, feature, etc.)
+   - SEO fields management
+
+2. Category Management:
+   - Create and organize categories
+   - Color coding for UI
+
+3. Comment Moderation:
+   - Approve/disapprove comments
+   - Bulk moderation actions
+
+4. Analytics:
+   - View tracking and statistics
+   - User engagement metrics
+
+FEATURES
+--------
+
+1. Content Management:
+   - Rich text content with markdown support
+   - Multiple image uploads per article
+   - SEO optimization fields
+   - Publishing workflow (draft → review → published)
+
+2. User Engagement:
+   - Like/unlike functionality
+   - Nested comments system
+   - View tracking and analytics
+
+3. Organization:
+   - Category-based organization
+   - Tag system for better searchability
+   - Priority levels and featured articles
+
+4. Search & Filtering:
+   - Full-text search across title, content, tags
+   - Category filtering
+   - Date range filtering
+   - Advanced search endpoint
+
+5. Performance:
+   - Database indexing for common queries
+   - Optimized querysets with select_related/prefetch_related
+   - Pagination for large datasets
+
+6. Security:
+   - JWT-based authentication
+   - Permission-based access control
+   - Input validation and sanitization
+
+INSTALLATION & SETUP
+--------------------
+
+1. Install dependencies:
+   pip install -r requirements.txt
+
+2. Run migrations:
+   python manage.py makemigrations news
+   python manage.py migrate
+
+3. Create superuser:
+   python manage.py createsuperuser
+
+4. Start development server:
+   python manage.py runserver
+
+5. Access admin panel:
+   http://localhost:8000/admin/
+
+USAGE EXAMPLES
+--------------
+
+1. Get news previews:
+   GET /news/?page=1&page_size=12
+
+2. Get featured articles:
+   GET /news/featured/
+
+3. Read full article:
+   GET /news/my-article-slug/
+
+4. Search articles:
+   GET /news/search/?q=security
+
+5. Like an article (authenticated):
+   POST /news/my-article-slug/like/
+   Authorization: Bearer <token>
+
+6. Create article (admin):
+   POST /news/admin/
+   Authorization: Bearer <admin_token>
+   Body: {
+     "title": "New Article",
+     "summary": "Brief summary",
+     "content": "Full content...",
+     "status": "published"
+   }
+
+NOTES
+-----
+- All timestamps are in UTC
+- Image uploads are stored in media/news_images/
+- The system supports PostgreSQL array fields for tags
+- View tracking includes both authenticated and anonymous users
+- Comments support nested replies (parent-child relationship)
+- SEO fields are optional but recommended for better search visibility
