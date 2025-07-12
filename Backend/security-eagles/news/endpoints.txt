@@ -242,3 +242,4 @@ FRONTEND INTEGRATION TIPS
 5. Use like_count for displaying total likes
 6. Use featured_image for article thumbnails
 7. Use reading_time for UX indicators
+
